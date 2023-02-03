@@ -10,7 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_02_091456) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_02_235111) do
+  create_table "achievements", force: :cascade do |t|
+    t.string "name"
+    t.string "event"
+    t.integer "count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "achievements_players", id: false, force: :cascade do |t|
+    t.integer "player_id", null: false
+    t.integer "achievement_id", null: false
+    t.index ["achievement_id", "player_id"], name: "index_achievements_players_on_achievement_id_and_player_id"
+    t.index ["player_id", "achievement_id"], name: "index_achievements_players_on_player_id_and_achievement_id"
+  end
+
+  create_table "game_events", force: :cascade do |t|
+    t.string "event"
+    t.integer "count"
+    t.integer "player_id"
+    t.integer "game_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_game_events_on_game_id"
+    t.index ["player_id"], name: "index_game_events_on_player_id"
+  end
+
   create_table "games", force: :cascade do |t|
     t.integer "home_team_id"
     t.integer "away_team_id"
@@ -33,5 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_02_091456) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "game_events", "games"
+  add_foreign_key "game_events", "players"
   add_foreign_key "players", "teams"
 end
